@@ -74,3 +74,24 @@ Deno.test("circular dependency resolution", () => {
   assertEquals(userService.repo.username(), "foo");
   assertEquals(userService.repo.databaseConnection, "mysql");
 });
+
+Deno.test("correct order", () => {
+  class UserService {
+    constructor(public id: string, public username: string) {}
+  }
+
+  container.set(UserService, UserService, () => "@beganovich", {
+    position: 1,
+    property: "constructor",
+  });
+
+  container.set(UserService, UserService, () => "10", {
+    position: 0,
+    property: "constructor",
+  });
+
+  const userService = container.get<UserService>(UserService);
+
+  assertEquals(userService.username, "@beganovich");
+  assertEquals(userService.id, "10");
+});
