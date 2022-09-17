@@ -1,6 +1,5 @@
 import { Container } from "../mod.ts";
 import { assertEquals } from "../deps.ts";
-import { assertIsError } from "https://deno.land/std@0.156.0/testing/asserts.ts";
 
 const container = new Container();
 
