@@ -1,7 +1,7 @@
 import { container, Inject } from "../../mod.ts";
 import { assertEquals } from "../../deps.ts";
 
-Deno.test("injecting using decorators", () => {
+Deno.test("injecting using @Inject", () => {
   class UserRepository {
     username() {
       return "@beganovich";
