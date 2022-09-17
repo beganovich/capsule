@@ -127,3 +127,23 @@ Deno.test("calling class method using provided arguments", () => {
 
   assertEquals(container.get<string>(UserService, "index"), "@beganovich");
 });
+
+Deno.test("overwriting the properties", () => {
+  class UserService {
+    constructor(public username: string) {}
+  }
+
+  container.set(UserService, UserService, () => "@beganovich", {
+    position: 0,
+    property: "constructor",
+  });
+
+  assertEquals(container.get<UserService>(UserService).username, "@beganovich");
+
+  container.set(UserService, UserService, () => "@capsule", {
+    position: 0,
+    property: "constructor",
+  });
+
+  assertEquals(container.get<UserService>(UserService).username, "@capsule");
+});
