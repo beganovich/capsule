@@ -1,5 +1,6 @@
 import { Container } from "../mod.ts";
 import { assertEquals } from "../deps.ts";
+import { assertIsError } from "https://deno.land/std@0.156.0/testing/asserts.ts";
 
 const container = new Container();
 
@@ -94,4 +95,21 @@ Deno.test("correct order", () => {
 
   assertEquals(userService.username, "@beganovich");
   assertEquals(userService.id, "10");
+});
+
+Deno.test("flushing the container", () => {
+  class UserService {
+    constructor(public username: string) {}
+  }
+
+  container.set(UserService, UserService, () => "@beganovich", {
+    position: 0,
+    property: "constructor",
+  });
+
+  assertEquals(container.get<UserService>(UserService).username, "@beganovich");
+
+  container.flush();
+
+  assertEquals(container.get<UserService>(UserService).username, undefined);
 });

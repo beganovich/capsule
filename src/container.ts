@@ -74,4 +74,10 @@ export class Container {
 
     return object[property](...args) as T;
   }
+
+  flush(): Container {
+    this.#arguments = [];
+
+    return this;
+  }
 }
