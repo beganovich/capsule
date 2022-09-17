@@ -34,12 +34,43 @@ Deno.test("providing primitive types", () => {
     constructor(public id: string) {}
   }
 
-  container.set(UserService, UserService, () => '@id', {
+  container.set(UserService, UserService, () => "@id", {
     position: 0,
     property: "constructor",
   });
 
   const userService = container.get<UserService>(UserService);
 
-  assertEquals(userService.id, '@id');
+  assertEquals(userService.id, "@id");
+});
+
+Deno.test("circular dependency resolution", () => {
+  class UserRepository {
+    constructor(public databaseConnection: string) {}
+
+    username() {
+      return "foo";
+    }
+  }
+
+  class UserService {
+    constructor(public repo: UserRepository) {}
+  }
+
+  container.set(UserRepository, UserRepository, () => "mysql", {
+    position: 0,
+    property: "constructor",
+  });
+
+  container.set(
+    UserService,
+    UserService,
+    (self) => self.get(UserRepository),
+    { position: 0, property: "constructor" },
+  );
+
+  const userService = container.get<UserService>(UserService);
+
+  assertEquals(userService.repo.username(), "foo");
+  assertEquals(userService.repo.databaseConnection, "mysql");
 });
