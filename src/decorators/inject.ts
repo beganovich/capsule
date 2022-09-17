@@ -1,6 +1,6 @@
-import { container } from "../container.ts";
+import { Container, container as defaultContainer } from "../container.ts";
 
-export const Inject = (target: Function) => {
+export const Inject = (target: Function, container?: Container) => {
   return (
     service: Object | Function,
     propertyKey: string | symbol,
@@ -10,7 +10,9 @@ export const Inject = (target: Function) => {
       ? service.constructor
       : service;
 
-    container.set(callable, callable, (self) => self.get(target), {
+    const c = container ?? defaultContainer;
+
+    c.set(callable, callable, (self) => self.get(target), {
       position: parameterIndex,
       property: propertyKey || "constructor",
     });
