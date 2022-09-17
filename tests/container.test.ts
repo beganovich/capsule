@@ -112,3 +112,18 @@ Deno.test("flushing the container", () => {
 
   assertEquals(container.get<UserService>(UserService).username, undefined);
 });
+
+Deno.test("calling class method using provided arguments", () => {
+  class UserService {
+    index(username: string) {
+      return username;
+    }
+  }
+
+  container.set(UserService, UserService, () => "@beganovich", {
+    position: 0,
+    property: "index",
+  });
+
+  assertEquals(container.get<string>(UserService, "index"), "@beganovich");
+});
