@@ -81,3 +81,5 @@ export class Container {
     return this;
   }
 }
+
+export const container = new Container();
